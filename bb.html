@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>BD Diploma — CGPA Calculator</title>
+  <style>
+    :root {
+      --bg: #f3f4f6;
+      --card: #ffffff;
+      --accent: #3b82f6;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --input-bg: #e5e7eb;
+      --button-hover: #2563eb;
+    }
+
+    * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { margin:0; padding:0; min-height:100vh; display:flex; justify-content:center; align-items:center; background: var(--bg); }
+
+    .container {
+      width: 100%;
+      max-width: 700px;
+      background: var(--card);
+      padding: 30px 25px;
+      border-radius: 12px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+    }
+
+    h1 { text-align: center; margin-bottom: 25px; color: var(--accent); }
+
+    label { margin-top: 12px; margin-bottom: 6px; color: var(--text); font-weight: 500; }
+
+    .input-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 12px;
+    }
+
+    input {
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: none;
+      background: var(--input-bg);
+      color: var(--text);
+      font-size: 14px;
+    }
+
+    input:focus { outline: 2px solid var(--accent); }
+
+    button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 12px;
+      background: var(--accent);
+      border: none;
+      border-radius: 8px;
+      color: #ffffff;
+      font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover { background: var(--button-hover); }
+
+    .result {
+      margin-top: 20px;
+      padding: 20px;
+      border-radius: 12px;
+      background: #e0f2fe;
+      border-left: 4px solid var(--accent);
+      color: var(--text);
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 640px) {
+      .container { padding: 20px 15px; }
+      h1 { font-size: 20px; }
+      input { font-size: 13px; padding: 9px 10px; }
+      button { font-size: 15px; padding: 10px; }
+      .result { font-size: 14px; padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Diploma in Engineering CGPA Calculator</h1>
+    <label>Student Name</label>
+    <input id="studentName" placeholder="Enter name">
+    <label>Roll No</label>
+    <input id="roll" placeholder="Enter roll">
+    <label>Enter GPA for each semester (Max 4.0)</label>
+    <div class="input-grid">
+      <input type="number" id="gpa1" placeholder="Semester 1" step="0.01" min="0" max="4">
+      <input type="number" id="gpa2" placeholder="Semester 2" step="0.01" min="0" max="4">
+      <input type="number" id="gpa3" placeholder="Semester 3" step="0.01" min="0" max="4">
+      <input type="number" id="gpa4" placeholder="Semester 4" step="0.01" min="0" max="4">
+      <input type="number" id="gpa5" placeholder="Semester 5" step="0.01" min="0" max="4">
+      <input type="number" id="gpa6" placeholder="Semester 6" step="0.01" min="0" max="4">
+      <input type="number" id="gpa7" placeholder="Semester 7" step="0.01" min="0" max="4">
+      <input type="number" id="gpa8" placeholder="Semester 8" step="0.01" min="0" max="4">
+    </div>
+
+    <button id="calcBtn">Calculate CGPA</button>
+
+    <div id="result" class="result" style="display:none"></div>
+  </div>
+
+  <script>
+    const weights = [0.05,0.05,0.10,0.10,0.20,0.20,0.20,0.10];
+
+    document.getElementById('calcBtn').addEventListener('click', ()=>{
+      const name = document.getElementById('studentName').value.trim() || '—';
+      const roll = document.getElementById('roll').value.trim() || '—';
+
+      const gpas = [];
+      for(let i=1;i<=8;i++){
+        let val = parseFloat(document.getElementById('gpa'+i).value);
+        if(isNaN(val) || val<0 || val>4){alert('Enter valid GPA between 0-4 for semester '+i); return;}
+        gpas.push(val);
+      }
+
+      let cgpa = 0;
+      for(let i=0;i<8;i++) cgpa += gpas[i]*weights[i];
+      cgpa = cgpa.toFixed(2);
+
+      let remark='';
+      if(cgpa>=3.6) remark='Excellent';
+      else if(cgpa>=3.0) remark='Good';
+      else if(cgpa>=2.0) remark='Average';
+      else remark='Needs Improvement';
+
+      document.getElementById('result').style.display='block';
+      document.getElementById('result').innerHTML=`
+        <strong>Name:</strong> ${name}<br>
+        <strong>Roll:</strong> ${roll}<br>
+        <strong>CGPA:</strong> ${cgpa}<br>
+        <strong>Remark:</strong> ${remark}
+      `;
+    });
+  </script>
+</body>
+</html>
